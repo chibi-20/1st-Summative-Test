@@ -1324,7 +1324,7 @@
             </div>
             <p class="score-message" id="score-message"></p>
             <div class="modal-buttons">
-                <button class="btn btn-primary" onclick="showReview()">Suriin ang mga Sagot</button>
+                <button class="btn btn-primary hidden" id="review-btn" onclick="showReview()">Suriin ang mga Sagot</button>
                 <button class="btn btn-secondary" onclick="restartQuiz()">&#8634; Subukan Muli</button>
                 <button class="btn btn-back-lesson" onclick="backToLesson()">&#128218; Bumalik sa Aralin</button>
             </div>
@@ -1451,6 +1451,7 @@
         document.getElementById('score-modal').classList.add('active');
         setTimeout(()=>{const c=document.getElementById('progress-circle');const circ=2*Math.PI*65;c.style.strokeDasharray=circ;c.style.strokeDashoffset=circ-(pct/100)*circ;},100);
         animateCounter('score-percent-display',0,pct,'%',1500);
+        document.getElementById('review-btn').classList.toggle('hidden',correct<25);
         if(correct>=25)launchConfetti();
     }
 
