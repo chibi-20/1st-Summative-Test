@@ -1,0 +1,1476 @@
+<!DOCTYPE html>
+<html lang="fil">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AP Reviewer - Araling Panlipunan</title>
+
+    <!-- ==================== CSS STYLES ==================== -->
+    <style>
+        /* ---------- CSS Variables / Theme ---------- */
+        :root {
+            --bg-primary: #f0f2f5;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --text-primary: #1a1a2e;
+            --text-secondary: #555770;
+            --accent: #6c63ff;
+            --accent-hover: #5a52d5;
+            --accent-light: rgba(108, 99, 255, 0.08);
+            --correct: #28a745;
+            --correct-light: rgba(40, 167, 69, 0.1);
+            --incorrect: #dc3545;
+            --incorrect-light: rgba(220, 53, 69, 0.1);
+            --border: #e0e0e0;
+            --shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.12);
+            --shadow-colored: 0 8px 30px rgba(108, 99, 255, 0.15);
+            --radius: 18px;
+            --transition: all 0.3s ease;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --progress-bg: #e9ecef;
+
+            --mod1-color: #6c63ff;
+            --mod1-light: rgba(108, 99, 255, 0.08);
+            --mod1-gradient: linear-gradient(135deg, #6c63ff, #a78bfa);
+            --mod2a-color: #10b981;
+            --mod2a-light: rgba(16, 185, 129, 0.08);
+            --mod2a-gradient: linear-gradient(135deg, #10b981, #34d399);
+            --mod2b-color: #f59e0b;
+            --mod2b-light: rgba(245, 158, 11, 0.08);
+            --mod2b-gradient: linear-gradient(135deg, #f59e0b, #fbbf24);
+            --mod2c-color: #3b82f6;
+            --mod2c-light: rgba(59, 130, 246, 0.08);
+            --mod2c-gradient: linear-gradient(135deg, #3b82f6, #60a5fa);
+
+            --highlight: #fffbeb;
+            --highlight-border: #f59e0b;
+            --example-bg: rgba(108, 99, 255, 0.06);
+            --example-border: #6c63ff;
+            --keyterm-bg: rgba(236, 72, 153, 0.08);
+            --keyterm-color: #db2777;
+            --tip-bg: rgba(16, 185, 129, 0.08);
+            --tip-border: #10b981;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0d0d1a;
+            --bg-secondary: #161628;
+            --bg-card: #1c1c34;
+            --text-primary: #e8e8f0;
+            --text-secondary: #9898b8;
+            --border: #2a2a4a;
+            --shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+            --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.45);
+            --shadow-colored: 0 8px 30px rgba(108, 99, 255, 0.2);
+            --glass-bg: rgba(28, 28, 52, 0.92);
+            --glass-border: rgba(108, 99, 255, 0.15);
+            --progress-bg: #2a2a4a;
+            --accent-light: rgba(108, 99, 255, 0.15);
+            --correct-light: rgba(40, 167, 69, 0.12);
+            --incorrect-light: rgba(220, 53, 69, 0.12);
+            --mod1-light: rgba(108, 99, 255, 0.12);
+            --mod2a-light: rgba(16, 185, 129, 0.12);
+            --mod2b-light: rgba(245, 158, 11, 0.12);
+            --mod2c-light: rgba(59, 130, 246, 0.12);
+            --highlight: rgba(245, 158, 11, 0.1);
+            --example-bg: rgba(108, 99, 255, 0.1);
+            --keyterm-bg: rgba(236, 72, 153, 0.12);
+            --tip-bg: rgba(16, 185, 129, 0.1);
+        }
+
+        /* ---------- Reset & Base ---------- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background 0.4s ease, color 0.3s ease;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ---------- Scrollbar ---------- */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 50px; }
+
+        /* ---------- Header ---------- */
+        .header {
+            background: var(--bg-secondary);
+            padding: 14px 24px;
+            box-shadow: var(--shadow);
+            position: sticky; top: 0; z-index: 100;
+            display: flex; justify-content: space-between; align-items: center;
+            transition: var(--transition);
+            border-bottom: 1px solid var(--border);
+        }
+        .header-brand { display: flex; align-items: center; gap: 10px; }
+        .header-logo {
+            width: 36px; height: 36px;
+            background: var(--mod1-gradient);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; color: #fff; font-weight: 800;
+        }
+        .header h1 { font-size: 1.2rem; color: var(--accent); font-weight: 700; letter-spacing: -0.3px; }
+        .header h1 span { color: var(--text-secondary); font-weight: 400; font-size: 0.85rem; margin-left: 4px; }
+        .header-controls { display: flex; gap: 12px; align-items: center; }
+
+        /* ---------- Dark Mode Toggle ---------- */
+        .dark-toggle {
+            background: var(--bg-primary); border: 2px solid var(--border);
+            border-radius: 50px; width: 52px; height: 28px;
+            cursor: pointer; position: relative; transition: var(--transition);
+        }
+        .dark-toggle::after {
+            content: ''; position: absolute; top: 2px; left: 2px;
+            width: 22px; height: 22px; border-radius: 50%;
+            background: var(--accent); transition: var(--transition);
+            box-shadow: 0 2px 6px rgba(108,99,255,0.3);
+        }
+        [data-theme="dark"] .dark-toggle::after { transform: translateX(24px); }
+        .dark-toggle-icon { font-size: 1rem; cursor: pointer; }
+
+        /* ---------- Timer ---------- */
+        .timer-display {
+            font-size: 1rem; font-weight: 700;
+            color: var(--accent); background: var(--accent-light);
+            padding: 5px 14px; border-radius: 50px;
+            min-width: 76px; text-align: center; display: none;
+            font-variant-numeric: tabular-nums;
+        }
+        .timer-display.active { display: block; }
+        .timer-display.warning { color: var(--incorrect); background: var(--incorrect-light); animation: pulse 1s infinite; }
+
+        /* ---------- Container ---------- */
+        .container { max-width: 880px; margin: 0 auto; padding: 24px 16px; }
+
+        /* ======================================================
+           LESSON SECTION — AESTHETIC DESIGN
+           ====================================================== */
+        .lesson-section { animation: fadeInUp 0.6s ease; }
+
+        /* ---- Hero ---- */
+        .lesson-hero {
+            text-align: center;
+            padding: 56px 28px 44px;
+            background: var(--mod1-gradient);
+            border-radius: 24px;
+            margin-bottom: 36px;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+        .lesson-hero::before {
+            content: '';
+            position: absolute; inset: 0;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(255,255,255,0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(255,255,255,0.05) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .lesson-hero::after {
+            content: '';
+            position: absolute; top: -60px; right: -60px;
+            width: 200px; height: 200px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            pointer-events: none;
+        }
+        .hero-icon { font-size: 3.5rem; margin-bottom: 14px; display: block; animation: floatIcon 3s ease-in-out infinite; }
+        .lesson-hero h2 { font-size: 2.2rem; margin-bottom: 8px; font-weight: 800; letter-spacing: -0.5px; position: relative; }
+        .lesson-hero p { font-size: 1.1rem; opacity: 0.9; position: relative; max-width: 500px; margin: 0 auto; line-height: 1.6; }
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 6px 18px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 16px;
+            backdrop-filter: blur(4px);
+            letter-spacing: 0.5px;
+            position: relative;
+        }
+
+        @keyframes floatIcon {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        /* ---- Module Tabs ---- */
+        .lesson-tabs {
+            display: flex; gap: 6px; margin-bottom: 28px;
+            overflow-x: auto; padding-bottom: 6px;
+            scrollbar-width: thin;
+        }
+        .lesson-tabs::-webkit-scrollbar { height: 4px; }
+        .lesson-tabs::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 50px; }
+        .lesson-tab {
+            padding: 12px 18px; border: none;
+            background: var(--bg-card); color: var(--text-secondary);
+            font-size: 0.85rem; font-weight: 600;
+            border-radius: 14px 14px 0 0;
+            cursor: pointer; white-space: nowrap;
+            transition: var(--transition);
+            border-bottom: 3px solid transparent;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .lesson-tab:hover { color: var(--accent); transform: translateY(-2px); }
+        .lesson-tab.active { border-bottom-color: var(--accent); color: var(--accent); background: var(--bg-card); }
+        .tab-icon {
+            width: 28px; height: 28px; border-radius: 8px;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 0.9rem; color: #fff; flex-shrink: 0;
+        }
+        .tab-icon.m1 { background: var(--mod1-gradient); }
+        .tab-icon.m2a { background: var(--mod2a-gradient); }
+        .tab-icon.m2b { background: var(--mod2b-gradient); }
+        .tab-icon.m2c { background: var(--mod2c-gradient); }
+
+        .lesson-panel { display: none; animation: fadeInUp 0.45s ease; }
+        .lesson-panel.active { display: block; }
+
+        /* ---- Module Section Header ---- */
+        .module-header {
+            display: flex; align-items: center; gap: 16px;
+            margin-bottom: 24px; padding: 20px 24px;
+            border-radius: var(--radius);
+            position: relative; overflow: hidden;
+        }
+        .module-header.mod1 { background: var(--mod1-light); border-left: 5px solid var(--mod1-color); }
+        .module-header.mod2a { background: var(--mod2a-light); border-left: 5px solid var(--mod2a-color); }
+        .module-header.mod2b { background: var(--mod2b-light); border-left: 5px solid var(--mod2b-color); }
+        .module-header.mod2c { background: var(--mod2c-light); border-left: 5px solid var(--mod2c-color); }
+        .module-header-icon {
+            width: 52px; height: 52px;
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.6rem; color: #fff; flex-shrink: 0;
+        }
+        .module-header-icon.mod1 { background: var(--mod1-gradient); }
+        .module-header-icon.mod2a { background: var(--mod2a-gradient); }
+        .module-header-icon.mod2b { background: var(--mod2b-gradient); }
+        .module-header-icon.mod2c { background: var(--mod2c-gradient); }
+        .module-header-text h3 { font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
+        .module-header-text p { font-size: 0.85rem; color: var(--text-secondary); }
+
+        /* ---- Lesson Cards ---- */
+        .lesson-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 28px 26px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            line-height: 1.9;
+            font-size: 1.02rem;
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+        .lesson-card:hover { box-shadow: var(--shadow-colored); transform: translateY(-2px); }
+        .lesson-card::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0;
+            height: 4px;
+            background: var(--mod1-gradient);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .lesson-card:hover::before { opacity: 1; }
+
+        .lesson-card h3 {
+            font-size: 1.2rem; font-weight: 700;
+            margin-bottom: 16px;
+            display: flex; align-items: center; gap: 10px;
+            color: var(--text-primary);
+        }
+        .card-icon {
+            width: 38px; height: 38px;
+            border-radius: 10px;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; color: #fff; flex-shrink: 0;
+        }
+        .card-icon.purple { background: var(--mod1-gradient); }
+        .card-icon.green { background: var(--mod2a-gradient); }
+        .card-icon.amber { background: var(--mod2b-gradient); }
+        .card-icon.blue { background: var(--mod2c-gradient); }
+        .card-icon.pink { background: linear-gradient(135deg, #ec4899, #f472b6); }
+        .card-icon.red { background: linear-gradient(135deg, #ef4444, #f87171); }
+        .card-icon.teal { background: linear-gradient(135deg, #14b8a6, #2dd4bf); }
+
+        .lesson-card h4 {
+            font-size: 1.05rem; color: var(--text-primary);
+            margin: 22px 0 10px; font-weight: 700;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .lesson-card h4::before {
+            content: '';
+            width: 4px; height: 20px;
+            border-radius: 4px; background: var(--accent);
+            flex-shrink: 0;
+        }
+        .lesson-card p { margin-bottom: 14px; }
+        .lesson-card ul, .lesson-card ol { margin: 10px 0 16px 24px; }
+        .lesson-card li { margin-bottom: 8px; position: relative; }
+
+        /* ---- Key Term Badge ---- */
+        .key-term {
+            display: inline;
+            background: var(--keyterm-bg);
+            color: var(--keyterm-color);
+            padding: 2px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.95em;
+        }
+
+        /* ---- Definition Box ---- */
+        .definition-box {
+            background: linear-gradient(135deg, var(--accent-light), rgba(167,139,250,0.06));
+            border: 1px solid rgba(108, 99, 255, 0.15);
+            border-left: 5px solid var(--accent);
+            padding: 18px 22px;
+            border-radius: 0 14px 14px 0;
+            margin: 16px 0;
+            position: relative;
+        }
+        .definition-box::before {
+            content: '📖';
+            position: absolute;
+            top: -12px; left: 12px;
+            font-size: 1.3rem;
+            background: var(--bg-card);
+            padding: 0 6px;
+            border-radius: 6px;
+        }
+        .definition-box strong { color: var(--accent); }
+
+        /* ---- Highlight Box ---- */
+        .highlight-box {
+            background: var(--highlight);
+            border-left: 5px solid var(--highlight-border);
+            padding: 16px 20px;
+            border-radius: 0 14px 14px 0;
+            margin: 16px 0;
+            font-weight: 500;
+            position: relative;
+        }
+        .highlight-box::before {
+            content: '💡';
+            position: absolute;
+            top: -12px; left: 12px;
+            font-size: 1.2rem;
+            background: var(--bg-card);
+            padding: 0 6px;
+            border-radius: 6px;
+        }
+        .highlight-box strong { color: #b45309; }
+        [data-theme="dark"] .highlight-box strong { color: #fbbf24; }
+
+        /* ---- Example Box ---- */
+        .example-box {
+            background: var(--example-bg);
+            border-left: 5px solid var(--example-border);
+            padding: 16px 20px;
+            border-radius: 0 14px 14px 0;
+            margin: 16px 0;
+            position: relative;
+        }
+        .example-box::before {
+            content: '📌';
+            position: absolute;
+            top: -12px; left: 12px;
+            font-size: 1.2rem;
+            background: var(--bg-card);
+            padding: 0 6px;
+            border-radius: 6px;
+        }
+        .example-box strong { color: var(--accent); }
+
+        /* ---- Tip / Green Box ---- */
+        .tip-box {
+            background: var(--tip-bg);
+            border-left: 5px solid var(--tip-border);
+            padding: 16px 20px;
+            border-radius: 0 14px 14px 0;
+            margin: 16px 0;
+            position: relative;
+        }
+        .tip-box::before {
+            content: '✅';
+            position: absolute;
+            top: -12px; left: 12px;
+            font-size: 1.2rem;
+            background: var(--bg-card);
+            padding: 0 6px;
+            border-radius: 6px;
+        }
+        .tip-box strong { color: #059669; }
+        [data-theme="dark"] .tip-box strong { color: #34d399; }
+
+        /* ---- Stat Box inside cards ---- */
+        .stat-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin: 16px 0;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 18px 14px;
+            border-radius: 14px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+        }
+        .stat-item .stat-num {
+            font-size: 1.8rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+        .stat-item .stat-num.purple { color: var(--mod1-color); }
+        .stat-item .stat-num.green { color: var(--mod2a-color); }
+        .stat-item .stat-num.amber { color: var(--mod2b-color); }
+        .stat-item .stat-num.blue { color: var(--mod2c-color); }
+        .stat-item .stat-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 6px;
+            font-weight: 500;
+        }
+
+        /* ---- Fancy Ordered List ---- */
+        .fancy-list { list-style: none; margin-left: 0 !important; counter-reset: fancy; }
+        .fancy-list li {
+            counter-increment: fancy;
+            padding: 14px 18px 14px 56px;
+            background: var(--bg-primary);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            position: relative;
+            border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+        .fancy-list li:hover { border-color: var(--accent); transform: translateX(4px); }
+        .fancy-list li::before {
+            content: counter(fancy);
+            position: absolute; left: 14px; top: 50%;
+            transform: translateY(-50%);
+            width: 30px; height: 30px;
+            background: var(--mod1-gradient);
+            color: #fff; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 0.85rem;
+        }
+
+        /* ---- Tables ---- */
+        .law-table {
+            width: 100%; border-collapse: separate;
+            border-spacing: 0; margin: 16px 0;
+            font-size: 0.95rem;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+        .law-table th, .law-table td {
+            padding: 14px 16px;
+            text-align: left; vertical-align: top;
+        }
+        .law-table th {
+            background: var(--mod1-gradient); color: #fff;
+            font-weight: 700; font-size: 0.85rem;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .law-table.green-head th { background: var(--mod2a-gradient); }
+        .law-table.amber-head th { background: var(--mod2b-gradient); }
+        .law-table.blue-head th { background: var(--mod2c-gradient); }
+        .law-table td {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+        }
+        .law-table tr:last-child td { border-bottom: none; }
+        .law-table tr:nth-child(even) td { background: var(--bg-primary); }
+        .law-table tr:hover td { background: var(--accent-light); }
+
+        /* ---- Section Divider ---- */
+        .section-divider {
+            display: flex; align-items: center;
+            gap: 14px; margin: 28px 0;
+            color: var(--text-secondary);
+            font-size: 0.85rem; font-weight: 600;
+        }
+        .section-divider::before, .section-divider::after {
+            content: ''; flex: 1; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+        }
+
+        /* ---- Take Quiz CTA ---- */
+        .take-quiz-cta {
+            text-align: center;
+            padding: 52px 28px;
+            background: var(--bg-card);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            margin-top: 36px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+        .take-quiz-cta::before {
+            content: '';
+            position: absolute; inset: 0;
+            background:
+                radial-gradient(circle at 10% 90%, rgba(108,99,255,0.06) 0%, transparent 50%),
+                radial-gradient(circle at 90% 10%, rgba(167,139,250,0.06) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        .cta-icon { font-size: 3rem; margin-bottom: 16px; display: block; animation: floatIcon 3s ease-in-out infinite; }
+        .take-quiz-cta h3 {
+            font-size: 1.6rem; margin-bottom: 10px;
+            color: var(--text-primary); font-weight: 800;
+            position: relative;
+        }
+        .take-quiz-cta p {
+            color: var(--text-secondary);
+            margin-bottom: 28px; font-size: 1.05rem;
+            position: relative; max-width: 420px;
+            margin-left: auto; margin-right: auto;
+            line-height: 1.6;
+        }
+        .cta-features {
+            display: flex; justify-content: center; gap: 24px;
+            margin-bottom: 28px; flex-wrap: wrap;
+            position: relative;
+        }
+        .cta-feat {
+            display: flex; align-items: center; gap: 6px;
+            font-size: 0.9rem; color: var(--text-secondary); font-weight: 500;
+        }
+        .cta-feat-icon {
+            width: 28px; height: 28px; border-radius: 8px;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 0.8rem; color: #fff;
+            background: var(--mod1-gradient);
+        }
+
+        /* ---- Start Screen ---- */
+        .start-screen {
+            text-align: center; padding: 60px 24px;
+            animation: fadeInUp 0.6s ease;
+        }
+        .start-screen h2 { font-size: 2rem; margin-bottom: 12px; }
+        .start-screen p { color: var(--text-secondary); margin-bottom: 32px; font-size: 1.05rem; line-height: 1.6; }
+        .start-options {
+            background: var(--bg-card); border-radius: var(--radius);
+            padding: 24px; margin-bottom: 24px;
+            box-shadow: var(--shadow); text-align: left;
+            border: 1px solid var(--border);
+        }
+        .start-options label {
+            display: flex; align-items: center; gap: 10px;
+            cursor: pointer; padding: 10px 0;
+            color: var(--text-primary); font-size: 1rem;
+        }
+        .start-options input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--accent); }
+        .timer-duration {
+            display: none; margin-left: 30px; margin-top: 4px;
+            gap: 8px; align-items: center;
+        }
+        .timer-duration.visible { display: flex; }
+        .timer-duration select {
+            padding: 6px 12px; border-radius: 8px;
+            border: 2px solid var(--border);
+            background: var(--bg-primary); color: var(--text-primary); font-size: 0.9rem;
+        }
+        .timer-duration span { font-size: 0.85rem; color: var(--text-secondary); }
+
+        /* ---------- Buttons ---------- */
+        .btn {
+            padding: 14px 36px; border: none; border-radius: 50px;
+            font-size: 1rem; font-weight: 600; cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn-primary { background: var(--accent); color: #fff; }
+        .btn-primary:hover {
+            background: var(--accent-hover); transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(108, 99, 255, 0.35);
+        }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+        .btn-secondary {
+            background: var(--bg-primary); color: var(--text-primary);
+            border: 2px solid var(--border);
+        }
+        .btn-secondary:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+        .btn-success { background: var(--correct); color: #fff; }
+        .btn-success:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(40, 167, 69, 0.35); }
+        .btn-large { padding: 18px 52px; font-size: 1.15rem; }
+        .btn-back-lesson { background: transparent; color: var(--accent); border: 2px solid var(--accent); }
+        .btn-back-lesson:hover { background: var(--accent-light); transform: translateY(-2px); }
+
+        /* ---------- Quiz Elements ---------- */
+        .progress-section { margin-bottom: 20px; animation: fadeIn 0.4s ease; }
+        .progress-info {
+            display: flex; justify-content: space-between;
+            margin-bottom: 8px; font-size: 0.9rem;
+            color: var(--text-secondary); font-weight: 500;
+        }
+        .progress-bar-container {
+            width: 100%; height: 10px;
+            background: var(--progress-bg);
+            border-radius: 50px; overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #a78bfa);
+            border-radius: 50px; transition: width 0.5s ease; width: 0%;
+        }
+        .question-card {
+            background: var(--bg-card); border-radius: var(--radius);
+            padding: 32px 28px; box-shadow: var(--shadow);
+            animation: fadeInUp 0.4s ease; transition: var(--transition);
+            border: 1px solid var(--border);
+        }
+        .question-number {
+            display: inline-block; background: var(--accent); color: #fff;
+            padding: 4px 14px; border-radius: 50px;
+            font-size: 0.8rem; font-weight: 600; margin-bottom: 16px;
+        }
+        .question-text {
+            font-size: 1.15rem; line-height: 1.7;
+            margin-bottom: 24px; color: var(--text-primary); font-weight: 500;
+        }
+        .choices { display: flex; flex-direction: column; gap: 12px; }
+        .choice-btn {
+            width: 100%; padding: 16px 20px;
+            background: var(--bg-primary); border: 2px solid var(--border);
+            border-radius: 14px; text-align: left;
+            font-size: 1rem; color: var(--text-primary);
+            cursor: pointer; transition: var(--transition);
+            display: flex; align-items: center; gap: 12px; line-height: 1.5;
+        }
+        .choice-btn:hover { border-color: var(--accent); background: var(--accent-light); transform: translateX(4px); }
+        .choice-btn.selected { border-color: var(--accent); background: var(--accent-light); font-weight: 600; }
+        .choice-letter {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 34px; height: 34px; border-radius: 10px;
+            background: var(--bg-secondary); border: 2px solid var(--border);
+            font-weight: 700; font-size: 0.85rem; flex-shrink: 0;
+            transition: var(--transition);
+        }
+        .choice-btn.selected .choice-letter {
+            background: var(--accent); color: #fff; border-color: var(--accent);
+        }
+        .nav-buttons { display: flex; justify-content: space-between; margin-top: 24px; gap: 12px; }
+
+        /* ---------- Modal ---------- */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.6); z-index: 1000;
+            align-items: center; justify-content: center;
+            padding: 16px; backdrop-filter: blur(10px);
+        }
+        .modal-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
+        .score-modal {
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            border-radius: 28px; padding: 40px 32px;
+            max-width: 480px; width: 100%; text-align: center;
+            animation: scaleIn 0.5s ease;
+            box-shadow: var(--shadow-lg);
+            backdrop-filter: blur(20px);
+            max-height: 90vh; overflow-y: auto;
+        }
+        .score-emoji { font-size: 4rem; margin-bottom: 16px; animation: bounceIn 0.8s ease; }
+        .score-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 24px; color: var(--text-primary); }
+        .circular-progress { position: relative; width: 160px; height: 160px; margin: 0 auto 24px; }
+        .circular-progress svg { transform: rotate(-90deg); width: 160px; height: 160px; }
+        .circular-progress .bg-circle { fill: none; stroke: var(--progress-bg); stroke-width: 10; }
+        .circular-progress .progress-circle {
+            fill: none; stroke: var(--accent); stroke-width: 10;
+            stroke-linecap: round; stroke-dasharray: 408;
+            stroke-dashoffset: 408; transition: stroke-dashoffset 2s ease;
+        }
+        .circular-progress .score-value {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%,-50%);
+            font-size: 2.5rem; font-weight: 800; color: var(--accent);
+        }
+        .circular-progress .score-label {
+            position: absolute; top: 65%; left: 50%;
+            transform: translateX(-50%); font-size: 0.85rem; color: var(--text-secondary);
+        }
+        .score-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+        .modal-stat-box {
+            background: var(--bg-primary); padding: 16px;
+            border-radius: 14px; text-align: center;
+            border: 1px solid var(--border);
+        }
+        .modal-stat-box .stat-value { font-size: 1.5rem; font-weight: 700; color: var(--text-primary); }
+        .modal-stat-box .stat-label { font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px; }
+        .modal-stat-box.correct-stat .stat-value { color: var(--correct); }
+        .modal-stat-box.wrong-stat .stat-value { color: var(--incorrect); }
+        .score-message { font-size: 1.1rem; margin-bottom: 28px; color: var(--text-secondary); line-height: 1.6; font-style: italic; }
+        .modal-buttons { display: flex; flex-direction: column; gap: 12px; }
+        .modal-buttons .btn { width: 100%; justify-content: center; }
+
+        /* ---------- Review ---------- */
+        .review-section { animation: fadeInUp 0.5s ease; }
+        .review-header { text-align: center; margin-bottom: 24px; }
+        .review-header h2 { font-size: 1.6rem; margin-bottom: 8px; }
+        .review-header p { color: var(--text-secondary); }
+        .review-card {
+            background: var(--bg-card); border-radius: var(--radius);
+            padding: 24px; margin-bottom: 16px; box-shadow: var(--shadow);
+            border-left: 4px solid var(--border); transition: var(--transition);
+            border: 1px solid var(--border);
+        }
+        .review-card.correct { border-left-color: var(--correct); }
+        .review-card.incorrect { border-left-color: var(--incorrect); }
+        .review-question-number { font-size: 0.8rem; font-weight: 600; color: var(--accent); margin-bottom: 8px; }
+        .review-question-text { font-size: 1rem; font-weight: 500; margin-bottom: 16px; line-height: 1.6; }
+        .review-answer {
+            display: flex; align-items: flex-start; gap: 8px;
+            padding: 10px 14px; border-radius: 10px;
+            margin-bottom: 8px; font-size: 0.95rem; line-height: 1.5;
+        }
+        .review-answer.correct-answer { background: var(--correct-light); color: var(--correct); }
+        .review-answer.wrong-answer { background: var(--incorrect-light); color: var(--incorrect); }
+        .review-answer .review-icon { flex-shrink: 0; font-size: 1.1rem; }
+        .review-explanation {
+            margin-top: 12px; padding: 12px 16px;
+            background: var(--accent-light); border-radius: 10px;
+            font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6;
+        }
+        .review-explanation strong { color: var(--accent); }
+        .review-bottom-buttons { display: flex; justify-content: center; gap: 12px; margin-top: 32px; flex-wrap: wrap; }
+
+        #confetti-canvas { position: fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:2000; }
+
+        /* ---------- Animations ---------- */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes scaleIn { from { opacity: 0; transform: scale(0.85); } to { opacity: 1; transform: scale(1); } }
+        @keyframes bounceIn { 0% { transform: scale(0); } 50% { transform: scale(1.25); } 70% { transform: scale(0.92); } 100% { transform: scale(1); } }
+        @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 600px) {
+            .header h1 { font-size: 1rem; }
+            .header h1 span { display: none; }
+            .lesson-hero h2 { font-size: 1.5rem; }
+            .lesson-hero { padding: 36px 18px 28px; border-radius: 18px; }
+            .hero-icon { font-size: 2.5rem; }
+            .lesson-card { padding: 20px 16px; font-size: 0.97rem; }
+            .lesson-card h3 { font-size: 1.05rem; }
+            .lesson-tab { padding: 10px 12px; font-size: 0.8rem; }
+            .tab-icon { width: 24px; height: 24px; font-size: 0.75rem; }
+            .module-header { padding: 14px 16px; gap: 12px; }
+            .module-header-icon { width: 42px; height: 42px; font-size: 1.3rem; }
+            .module-header-text h3 { font-size: 1.05rem; }
+            .stat-row { grid-template-columns: 1fr 1fr; }
+            .stat-item .stat-num { font-size: 1.4rem; }
+            .law-table { font-size: 0.85rem; }
+            .law-table th, .law-table td { padding: 10px 12px; }
+            .cta-features { gap: 12px; }
+
+            .start-screen h2 { font-size: 1.5rem; }
+            .question-card { padding: 24px 18px; }
+            .question-text { font-size: 1.05rem; }
+            .choice-btn { padding: 14px 16px; font-size: 0.95rem; }
+            .score-modal { padding: 28px 20px; }
+            .score-emoji { font-size: 3rem; }
+            .circular-progress { width: 130px; height: 130px; }
+            .circular-progress svg { width: 130px; height: 130px; }
+            .circular-progress .score-value { font-size: 2rem; }
+            .btn { padding: 12px 24px; font-size: 0.9rem; }
+            .btn-large { padding: 14px 36px; font-size: 1rem; }
+            .header-controls { gap: 8px; }
+            .timer-display { font-size: 0.9rem; padding: 4px 10px; }
+        }
+        @media (max-width: 380px) {
+            .container { padding: 16px 10px; }
+            .header { padding: 12px 14px; }
+            .score-stats { grid-template-columns: 1fr; }
+            .stat-row { grid-template-columns: 1fr; }
+        }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== HTML ==================== -->
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-brand">
+            <div class="header-logo">AP</div>
+            <h1>AP Reviewer <span>| Araling Panlipunan 10</span></h1>
+        </div>
+        <div class="header-controls">
+            <div class="timer-display" id="timer-display">00:00</div>
+            <span class="dark-toggle-icon" onclick="document.getElementById('dark-toggle').click()">&#9790;</span>
+            <div class="dark-toggle" id="dark-toggle" title="Dark Mode"></div>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- ====== LESSON SECTION ====== -->
+        <div id="lesson-section" class="lesson-section">
+
+            <div class="lesson-hero">
+                <span class="hero-icon">&#127466;&#127477;</span>
+                <h2>Araling Panlipunan 10</h2>
+                <p>Mga Kontemporaryong Isyu sa Pilipinas at sa Mundo</p>
+                <span class="hero-badge">QUARTER 1 &bull; MODULES 1 &amp; 2</span>
+            </div>
+
+            <div class="lesson-tabs" id="lesson-tabs">
+                <button class="lesson-tab active" onclick="switchTab(0)">
+                    <span class="tab-icon m1">&#128218;</span> Paksa 1
+                </button>
+                <button class="lesson-tab" onclick="switchTab(1)">
+                    <span class="tab-icon m1">&#127775;</span> Paksa 2
+                </button>
+                <button class="lesson-tab" onclick="switchTab(2)">
+                    <span class="tab-icon m2a">&#128465;</span> Solid Waste
+                </button>
+                <button class="lesson-tab" onclick="switchTab(3)">
+                    <span class="tab-icon m2b">&#127795;</span> Likas na Yaman
+                </button>
+                <button class="lesson-tab" onclick="switchTab(4)">
+                    <span class="tab-icon m2c">&#127758;</span> Climate Change
+                </button>
+            </div>
+
+            <!-- =========== PANEL 0: MODULE 1 – PAKSA 1 =========== -->
+            <div class="lesson-panel active" id="panel-0">
+
+                <div class="module-header mod1">
+                    <div class="module-header-icon mod1">&#128218;</div>
+                    <div class="module-header-text">
+                        <h3>Module 1 &mdash; Paksa 1</h3>
+                        <p>Konsepto ng Kontemporaryong Isyu</p>
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <h3><span class="card-icon purple">&#128214;</span> Ano ang Kontemporaryong Isyu?</h3>
+
+                    <p>Bilang panimula, mainam na iyong maintindihan kung ano ang kahulugan ng kontemporaryong isyu. Upang higit mong maintindihan, unawain ang dalawang mahahalagang salita:</p>
+
+                    <div class="definition-box">
+                        <strong>Kontemporaryo</strong> &mdash; tumutukoy sa mga pangyayari sa kasalukuyan na maaaring nakaaapekto sa buhay ng mga tao sa lipunan. Ito ay mga paksang napapanahon na nagiging sanhi ng pagkabagabag ng mga tao. Maaari rin itong mga pangyayaring naganap sa nakalipas na nakaaapekto hanggang ngayon.
+                    </div>
+
+                    <div class="definition-box">
+                        <strong>Isyu</strong> &mdash; mga pangyayari, suliranin, o paksa na napag-uusapan at maaaring dahilan o batayan ng debate. Maaari itong magdulot ng <span class="key-term">positibo</span> o <span class="key-term">negatibo</span> na epekto sa pamumuhay ng mga tao.
+                    </div>
+
+                    <div class="highlight-box">
+                        Ang <strong>kontemporaryong isyu</strong> ay tumutukoy sa anumang pangyayari, paksa, tema, opinyon, o ideya na may kaugnayan sa kasalukuyang panahon. Sinasaklaw nito ang lipunan at kultura at may tuwirang ugnayan sa interes at gawi ng mga mamamayan.
+                    </div>
+
+                    <p>Isang halimbawa ay ang pandemyang <span class="key-term">COVID-19</span>. Isa itong kontemporaryong isyu dahil nangyayari ito sa kasalukuyan at may malaking epekto sa buhay ng mga tao at maging sa ekonomiya ng ating bansa. Binago nito ang pamumuhay nating normal at nagdala ng tinatawag nating <em>new normal</em>.</p>
+                </div>
+
+                <div class="lesson-card">
+                    <h3><span class="card-icon pink">&#128204;</span> Mga Uri ng Kontemporaryong Isyu</h3>
+
+                    <h4>1. Kontemporaryong Isyung Panlipunan</h4>
+                    <p>Mga isyu na may malaking epekto sa iba't ibang sektor ng lipunan tulad ng pamilya, simbahan, paaralan, pamahalaan, at ekonomiya.</p>
+                    <div class="example-box"><strong>Halimbawa:</strong> same sex marriage, terorismo, rasismo, halalan, kahirapan</div>
+
+                    <h4>2. Kontemporaryong Isyung Pangkalusugan</h4>
+                    <p>Mga isyu na may kaugnayan sa kalusugan na maaaring nakabubuti o hindi nakabubuti sa mga tao sa lipunan.</p>
+                    <div class="example-box"><strong>Halimbawa:</strong> COVID-19, sobrang katabaan, malnutrisyon, Drug Addiction, HIV/AIDS</div>
+
+                    <h4>3. Kontemporaryong Isyung Pangkapaligiran</h4>
+                    <p>Tumutukoy sa mga isyung may kinalaman sa kapaligiran at tamang paggamit sa ating kalikasan.</p>
+                    <div class="example-box"><strong>Halimbawa:</strong> global warming, paglindol, baha, bagyo, El Ni&ntilde;o, La Ni&ntilde;a</div>
+
+                    <h4>4. Kontemporaryong Pangkalakalan</h4>
+                    <p>Mga suliraning may kinalaman sa globalisasyon at negosyo, kasama ang mga isyung pang-ekonomiya.</p>
+                    <div class="example-box"><strong>Halimbawa:</strong> import/export, online shopping, free trade, samahang pandaigdigan</div>
+                </div>
+
+                <div class="lesson-card">
+                    <h3><span class="card-icon blue">&#128240;</span> Saan Makakukuha ng mga Isyu?</h3>
+                    <p>Sa panahon natin ngayon, marami nang mapagkukunan ng mga impormasyon:</p>
+
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-num purple">&#128196;</div>
+                            <div class="stat-desc"><strong>Print Media</strong><br>Komiks, magazine, diyaryo</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-num blue">&#127909;</div>
+                            <div class="stat-desc"><strong>Visual Media</strong><br>Balita, pelikula, dokyumentaryo</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-num green">&#127760;</div>
+                            <div class="stat-desc"><strong>Online Media</strong><br>Facebook, online blogs, website</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <h3><span class="card-icon teal">&#128270;</span> Mga Dapat Tandaan sa Pag-aaral ng Isyu</h3>
+
+                    <ol class="fancy-list">
+                        <li><strong>Una:</strong> Bigyang pansin ang mga bahagi ng isyu. Alamin kung gumamit ba ito ng mapagkakatiwalaang sanggunian. Alamin ang kahalagahan, mga naaapektuhan, at paano nagsimula ang isyu.</li>
+                        <li><strong>Pangalawa:</strong> Suriin ang pagkakaiba ng mga opinyong nakapaloob &mdash; pangkapaligiran, pang-ekonomiya, politikal, panlipunan, at iba pa.</li>
+                        <li><strong>Pangatlo:</strong> Alamin kung ang isyu ay nabago sa paglipas ng panahon. Ito ba ay bahagi ng mas malawak na isyu? Ibigay ang sariling damdamin matapos itong suriin.</li>
+                        <li><strong>Pang-apat:</strong> Alamin ang lawak ng epekto at lebel nito &mdash; <span class="key-term">lokal</span>, <span class="key-term">pambansa</span>, o <span class="key-term">pandaigdigan</span>.</li>
+                        <li><strong>Panghuli:</strong> Malaman ang mga dapat gawin at sino ang dapat kumilos. Papaano mahihikayat ang ibang tao na kumilos tungkol dito.</li>
+                    </ol>
+
+                    <div class="section-divider">Mga Dapat Taglayin</div>
+
+                    <div class="tip-box">
+                        <ul style="margin-left: 18px;">
+                            <li>Kaalaman sa pagsusuri kung ito ay naglalahad ng <strong>patas na opinyon</strong>.</li>
+                            <li>Kaalaman sa batayan ng isyu &mdash; hango sa mga legal na dokumento, journal, sulat, larawan, atbp.</li>
+                            <li>Kakayahan sa pagbibigay ng opinyon, pagbuo ng ugnayan, at pangkalahatang pananaw.</li>
+                            <li>Kakayahang malaman kung ang pahayag ay <strong>makatotohanan o haka-haka</strong> lamang.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- =========== PANEL 1: MODULE 1 – PAKSA 2 =========== -->
+            <div class="lesson-panel" id="panel-1">
+
+                <div class="module-header mod1">
+                    <div class="module-header-icon mod1">&#127775;</div>
+                    <div class="module-header-text">
+                        <h3>Module 1 &mdash; Paksa 2</h3>
+                        <p>Kahalagahan ng Pag-aaral sa mga Kontemporaryong Isyu</p>
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <h3><span class="card-icon purple">&#127942;</span> Bakit Mahalaga ang Pag-aaral ng Kontemporaryong Isyu?</h3>
+
+                    <ol class="fancy-list">
+                        <li><strong>Pagiging mulat:</strong> Magiging mulat ka sa mga nangyayari sa kapaligiran. Matanto na may bahagi kang dapat gampanan sa lipunan.</li>
+                        <li><strong>Pagtimbang ng sitwasyon:</strong> Matututo kang tumimbang ng mga sitwasyon. Natutukoy ang kabutihan at di kabutihan nito.</li>
+                        <li><strong>Kasanayan sa pagbasa at pag-unawa:</strong> Lilinang ang kasanayan sa pagbasa at pag-unawa. Nahahasa rin ang kasanayang pangwika at panggramatika.</li>
+                        <li><strong>Kakayahang mag-isip at magplano:</strong> Napauunlad ang kakayahang mag-isip sa mga hakbangin at magsagawa ng mga programang makalulutas sa mga suliranin.</li>
+                        <li><strong>Pagpapalawak ng kaisipan:</strong> Napalalawak ang kaisipan kapag maalam sa mga impormasyon, ideolohiya, kasaysayan, at pagkakaiba ng kultura.</li>
+                        <li><strong>Pagpapatalas ng kaisipan:</strong> Nagpapatalas ng kaisipan at matanto ang angkop na pagkilos o pagtugon sa dala nitong hamon.</li>
+                        <li><strong>Pagpapahalaga:</strong> Napalalawak ang kakayahang pagpapahalaga sa mga tuwiran at di tuwirang ambag ng pangyayari o anumang isyu.</li>
+                        <li><strong>Pagiging mapanuri:</strong> Potensyal na pagkakataon upang maging mapanuri at mapagtugon na kabahagi sa pagbuo ng lipunang mulat.</li>
+                    </ol>
+
+                    <div class="highlight-box">
+                        Sa kabuuan, ang pag-aaral ng kontemporaryong isyu ay hindi lamang akademiko &mdash; ito ay paghahanda upang maging <strong>responsable at mulat na mamamayan</strong>.
+                    </div>
+                </div>
+            </div>
+
+            <!-- =========== PANEL 2: MODULE 2 – PAKSA 1 =========== -->
+            <div class="lesson-panel" id="panel-2">
+
+                <div class="module-header mod2a">
+                    <div class="module-header-icon mod2a">&#128465;</div>
+                    <div class="module-header-text">
+                        <h3>Module 2 &mdash; Paksa 1</h3>
+                        <p>Suliranin sa Solid Waste</p>
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <h3><span class="card-icon green">&#128465;</span> Ano ang Solid Waste?</h3>
+
+                    <p>Binigyang-kahulugan ng <span class="key-term">Batas Republika Blg. 9003</span> (Ecological Solid Waste Management Act of 2000) ang solid waste bilang mga itinapong basura na nanggagaling sa mga kabahayan, komersyal na establisimyento, institusyunal at industriyal na lugar, lansangan, konstruksiyon, at agrikultura.</p>
+
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-num green">56.7%</div>
+                            <div class="stat-desc">Mula sa mga Kabahayan</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-num amber">52.31%</div>
+                            <div class="stat-desc">Biodegradable Waste</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-num blue">27.78%</div>
+                            <div class="stat-desc">Recyclable Waste</div>
+                        </div>
+                    </div>
+
+                    <h4>Mga Dahilan ng Suliranin sa Solid Waste</h4>
+                    <ul>
+                        <li>Kakulangan ng disiplina sa pagtatapon ng basura</li>
+                        <li>Pagtatapon ng basura sa mga ilog, estero, kalsada, at bakanteng lote</li>
+                        <li>Kakulangan ng kaalaman o di pagsunod sa <span class="key-term">waste segregation</span></li>
+                        <li>Hindi pagsunod sa patakarang "no segregation, no collection"</li>
+                    </ul>
+
+                    <h4>Masamang Epekto</h4>
+                    <ul>
+                        <li>Pagbaha at paglaganap ng mga insekto at sakit</li>
+                        <li>Kontaminasyon ng tubig mula sa <span class="key-term">leachate</span> (katas ng basura)</li>
+                        <li><span class="key-term">Methane gas</span> mula sa dumpsites &mdash; nagiging sanhi ng global warming</li>
+                        <li>Panganib sa kalusugan ng mga nakatira malapit sa mga dumpsite</li>
+                    </ul>
+                </div>
+
+                <div class="lesson-card">
+                    <h3><span class="card-icon teal">&#9851;</span> Pamamahala ng Basura sa Pilipinas</h3>
+
+                    <p>Noong Enero 26, 2001, naging ganap na batas ang <span class="key-term">Republic Act 9003</span>. Nilalaman nito:</p>
+                    <ul>
+                        <li>Pagtatatag ng <strong>National Solid Waste Management Commission (NSWMC)</strong> at National Ecology Center</li>
+                        <li>Pagtatatag ng <strong>Materials Recovery Facility (MRF)</strong></li>
+                        <li>Pagsasaayos ng mga tapunan ng basura</li>
+                    </ul>
+
+                    <div class="highlight-box">
+                        <strong>NSWMC</strong> &mdash; binubuo ng 14 na ahensya ng pamahalaan sa pangunguna ng <strong>DENR</strong> at 3 mula sa pribadong sektor (Recycling Industry, Plastic Industry, NGO).
+                    </div>
+
+                    <div class="definition-box">
+                        <strong>Materials Recovery Facility (MRF)</strong> &mdash; pinaglalagyan ng mga nakolektang nabubulok na basura upang gawing compost o pataba ng lupa. Dito rin pansamantalang inilalagak ang mga recyclables tulad ng bote, plastic, papel, at lata.
+                    </div>
+
+                    <h4>Ipinagbabawal sa Seksyon 48 ng RA 9003</h4>
+                    <ul>
+                        <li>Pagtatapon o pagtatambak ng basura sa mga pampublikong lugar</li>
+                        <li>Pagsusunog ng basura</li>
+                        <li>Pagpapakolekta ng hindi pinaghiwa-hiwalay na basura</li>
+                        <li>Pagtatambak ng basura sa mga lugar na binabaha</li>
+                    </ul>
+
+                    <div class="section-divider">Mga Katuwang na NGO</div>
+
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-num green">&#127807;</div>
+                            <div class="stat-desc"><strong>Mother Earth Foundation</strong><br>Zero waste advocacy</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-num blue">&#127758;</div>
+                            <div class="stat-desc"><strong>Bantay Kalikasan</strong><br>Likas-kayang pag-unlad</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-num green">&#9968;</div>
+                            <div class="stat-desc"><strong>Greenpeace PH</strong><br>Malusog na kapaligiran</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- =========== PANEL 3: MODULE 2 – PAKSA 2 =========== -->
+            <div class="lesson-panel" id="panel-3">
+
+                <div class="module-header mod2b">
+                    <div class="module-header-icon mod2b">&#127795;</div>
+                    <div class="module-header-text">
+                        <h3>Module 2 &mdash; Paksa 2</h3>
+                        <p>Pagkasira ng mga Likas na Yaman</p>
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <h3><span class="card-icon amber">&#127795;</span> Ang Likas na Yaman ng Pilipinas</h3>
+                    <p>Sagana ang Pilipinas sa likas na yaman. Malaki ang pakinabang na nakukuha mula rito &mdash; pagtatanim, pangingisda, at mga hilaw na materyales para sa mga pabrika. Sa kabila nito, patuloy itong nasisira at nauubos.</p>
+
+                    <h4>1. Paghahawan ng Kagubatan (Deforestation)</h4>
+
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-num amber">57%</div>
+                            <div class="stat-desc">Kagubatan noong 1934</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-num" style="color:var(--incorrect);">23%</div>
+                            <div class="stat-desc">Kagubatan noong 2010</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-num amber">6.8M</div>
+                            <div class="stat-desc">Ektarya na lamang</div>
+                        </div>
+                    </div>
+
+                    <div class="definition-box">
+                        <strong>Deporestasyon</strong> (ayon sa FAO) &mdash; ang pangmatagalan at permanenteng pagkasira ng kagubatan dulot ng iba't ibang gawain ng tao tulad ng illegal na pagtotroso, illegal na pagmimina, migrasyon, mabilis na paglaki ng populasyon, at fuel harvesting.
+                    </div>
+
+                    <div class="tip-box">
+                        <strong>Mga Epekto:</strong> pagbaha, pagguho ng bundok, paglala ng climate change, pagliit ng kabuhayan ng mga mahihirap na umaasa sa kagubatan.
+                    </div>
+
+                    <h4>2. Pagmimina (Mining)</h4>
+                    <p>Sa mga key biodiversity areas tulad ng Palawan, Mindoro, Sierra Madre, at Mindanao matatagpuan ang <span class="key-term">23 malalaking minahan</span>. Masamang epekto: kontaminasyon ng ilog, fishkill, trahedya mula sa pagguho, banta ng mga inabandonang minahan.</p>
+
+                    <h4>3. Pagku-quarry (Quarrying)</h4>
+                    <p>Paraan ng pagkuha ng mga bato, buhangin, graba mula sa lupa sa pamamagitan ng pagtitibag, paghuhukay, o pagbabarena. Masamang epekto: polusyon sa hangin, sakit sa baga, pagkasira ng katubigan, pagkasira ng <span class="key-term">biodiversity at ecological balance</span>.</p>
+                </div>
+
+                <div class="lesson-card">
+                    <h3><span class="card-icon red">&#9878;</span> Mga Batas para sa Pangangalaga</h3>
+
+                    <table class="law-table amber-head">
+                        <thead><tr><th>Batas</th><th>Probisyon</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>RA 2706</strong></td><td>Itinatag ang Reforestation Administration upang mapasidhi ang reforestation</td></tr>
+                            <tr><td><strong>PD 705</strong></td><td>Reforestation sa buong bansa; ipinagbawal ang pagkakaingin</td></tr>
+                            <tr><td><strong>RA 7586</strong> (NIPAS Act)</td><td>Ilang pook bilang national park; ipinagbawal ang pagtotroso dito</td></tr>
+                            <tr><td><strong>RA 8749</strong> (Clean Air Act)</td><td>Pagtugon sa polusyon sa hangin</td></tr>
+                            <tr><td><strong>RA 9072</strong></td><td>Pangangalaga sa mga kuweba at cave resources</td></tr>
+                            <tr><td><strong>RA 9147</strong> (Wildlife Act)</td><td>Proteksyon ng mga wildlife resources at tirahan</td></tr>
+                            <tr><td><strong>RA 9175</strong> (Chainsaw Act)</td><td>Ipinagbawal ang paggamit ng chainsaw; matigil ang ilegal na pagtotroso</td></tr>
+                            <tr><td><strong>RA 8371</strong> (IPRA)</td><td>Karapatan ng mga katutubo; kontribusyon sa pangangalaga</td></tr>
+                            <tr><td><strong>Proc. 643</strong></td><td>June 25 bilang Philippines Arbor Day</td></tr>
+                            <tr><td><strong>EO 23</strong></td><td>Ipinatigil ang pagputol ng puno; anti-illegal logging task force</td></tr>
+                            <tr><td><strong>EO 26</strong></td><td>National Greening Program</td></tr>
+                        </tbody>
+                    </table>
+
+                    <div class="section-divider">Mga Batas sa Pagmimina</div>
+
+                    <table class="law-table amber-head">
+                        <thead><tr><th>Batas</th><th>Layunin</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>Philippine Mining Act</strong> (1995)</td><td>Masubaybayan ang pagmimina kasabay ng pangangalaga sa kalikasan</td></tr>
+                            <tr><td><strong>EO 79</strong></td><td>Proteksiyong pangkapaligiran, responsableng pagmimina, revenue-sharing</td></tr>
+                            <tr><td><strong>Phil. Mineral Resources Act</strong> (2012)</td><td>Masubaybayan ang paggamit ng yamang mineral; pantay na benepisyo</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- =========== PANEL 4: MODULE 2 – PAKSA 3 =========== -->
+            <div class="lesson-panel" id="panel-4">
+
+                <div class="module-header mod2c">
+                    <div class="module-header-icon mod2c">&#127758;</div>
+                    <div class="module-header-text">
+                        <h3>Module 2 &mdash; Paksa 3</h3>
+                        <p>Climate Change</p>
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <h3><span class="card-icon blue">&#127758;</span> Ano ang Climate Change?</h3>
+
+                    <div class="definition-box">
+                        <strong>Climate Change</strong> &mdash; ang abnormal na pagbabago ng klima sa buong mundo tulad ng pag-init o paglamig ng temperatura, at tuluy-tuloy at malakas na pag-ulan. Naramdaman simula noong kalagitnaan ng ika-20 na siglo.
+                    </div>
+
+                    <h4>Dalawang Sanhi ng Climate Change</h4>
+                    <ol class="fancy-list">
+                        <li><strong>Natural na pagbabago:</strong> Sama-samang epekto ng enerhiya mula sa araw, pag-ikot ng mundo, at init mula sa ilalim ng lupa na nagpapataas ng temperatura.</li>
+                        <li><strong>Gawain ng tao:</strong> Nakapagpapataas sa <span class="key-term">carbon dioxide</span> at <span class="key-term">greenhouse gases</span> sa atmospera. Halimbawa: paggamit ng fossil fuels (langis at coal) at pagputol ng mga puno.</li>
+                    </ol>
+
+                    <h4>Mga Epekto ng Climate Change</h4>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-num" style="color:var(--incorrect);">&#127777;</div>
+                            <div class="stat-desc"><strong>Global Warming</strong><br>Pag-init ng temperatura</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-num blue">&#127754;</div>
+                            <div class="stat-desc"><strong>Baha &amp; Bagyo</strong><br>Matinding kalamidad</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-num green">&#129440;</div>
+                            <div class="stat-desc"><strong>Coral Bleaching</strong><br>Pagkamatay ng coral reef</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-num amber">&#127806;</div>
+                            <div class="stat-desc"><strong>Food Security</strong><br>Pagkasira ng agrikultura</div>
+                        </div>
+                    </div>
+
+                    <div class="tip-box">
+                        <strong>Iba pang epekto:</strong> paglaganap ng sakit (cholera, malaria, dengue, leptospirosis), malnutrisyon, pagtaas ng sea level dahil sa pagkatunaw ng iceberg, at pagkawala ng mga species.
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <h3><span class="card-icon blue">&#128220;</span> Mga Programa at Patakaran</h3>
+
+                    <div class="highlight-box">
+                        <strong>Republic Act No. 9729</strong> &mdash; Climate Change Act of 2009. Ito ang sagot ng Pilipinas sa banta ng climate change alinsunod sa pangako sa ilalim ng <span class="key-term">UNFCCC</span>.
+                    </div>
+
+                    <p>Nilalaman:</p>
+                    <ul>
+                        <li>Pagbalangkas ng mga programa, proyekto, plano, at estratehiya</li>
+                        <li>Paglikha ng <span class="key-term">Climate Change Commission</span> &mdash; tanging ahensya na sumusubaybay at sumusuri ng mga programa hinggil sa pagbabago ng klima</li>
+                        <li>Pagtatatag ng National Framework Strategy and Program on Climate Change</li>
+                    </ul>
+
+                    <div class="definition-box">
+                        <strong>RA 8749</strong> (Philippine Clean Air Act of 1999) &mdash; naglalayong mapanatiling malinis at libre sa greenhouse gas emissions ang hangin sa bansa.
+                    </div>
+
+                    <div class="section-divider">Pandaigdigang Organisasyon</div>
+
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <div class="stat-num blue">&#127482;&#127475;</div>
+                            <div class="stat-desc"><strong>UNDP</strong><br>Global partnership; MDGs</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-num amber">&#128176;</div>
+                            <div class="stat-desc"><strong>IMF</strong><br>Pinansiyal na aspekto</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-num green">&#127759;</div>
+                            <div class="stat-desc"><strong>UNFCCC</strong><br>Taunang pagpupulong ng mga bansa</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Take the Quiz CTA -->
+            <div class="take-quiz-cta">
+                <span class="cta-icon">&#127942;</span>
+                <h3>Handa ka na ba?</h3>
+                <p>Natapos mo na ang pagbabasa ng aralin. I-test ang iyong kaalaman!</p>
+                <div class="cta-features">
+                    <div class="cta-feat"><span class="cta-feat-icon">&#10067;</span> 30 Tanong</div>
+                    <div class="cta-feat"><span class="cta-feat-icon">&#127922;</span> Randomized</div>
+                    <div class="cta-feat"><span class="cta-feat-icon">&#9201;</span> May Timer</div>
+                    <div class="cta-feat"><span class="cta-feat-icon">&#128200;</span> May Score</div>
+                </div>
+                <button class="btn btn-primary btn-large" onclick="showQuizSetup()">Sagutan ang Quiz &#10132;</button>
+            </div>
+        </div>
+
+        <!-- ====== QUIZ SETUP ====== -->
+        <div id="start-screen" class="start-screen hidden">
+            <h2>Simulan ang Quiz</h2>
+            <p>30 tanong ang sasagutin mo. Ang pagkakasunod-sunod ng mga tanong at choices ay randomized. Good luck!</p>
+            <div class="start-options">
+                <label><input type="checkbox" id="timer-toggle"> I-enable ang Timer</label>
+                <div class="timer-duration" id="timer-duration-container">
+                    <select id="timer-minutes">
+                        <option value="10">10 minuto</option>
+                        <option value="15">15 minuto</option>
+                        <option value="20" selected>20 minuto</option>
+                        <option value="30">30 minuto</option>
+                        <option value="45">45 minuto</option>
+                        <option value="60">60 minuto</option>
+                    </select>
+                    <span>para sa 30 tanong</span>
+                </div>
+            </div>
+            <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+                <button class="btn btn-primary btn-large" onclick="startQuiz()">Simulan &#10132;</button>
+                <button class="btn btn-back-lesson" onclick="backToLesson()">&#8592; Bumalik sa Aralin</button>
+            </div>
+        </div>
+
+        <!-- ====== QUIZ ====== -->
+        <div id="quiz-section" class="hidden">
+            <div class="progress-section">
+                <div class="progress-info">
+                    <span id="question-counter">Tanong 1 ng 30</span>
+                    <span id="answered-counter">0 / 30 nasagutan</span>
+                </div>
+                <div class="progress-bar-container"><div class="progress-bar" id="progress-bar"></div></div>
+            </div>
+            <div class="question-card" id="question-card">
+                <div class="question-number" id="question-number-badge">Tanong 1</div>
+                <div class="question-text" id="question-text"></div>
+                <div class="choices" id="choices-container"></div>
+            </div>
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" id="prev-btn" onclick="prevQuestion()" disabled>&#8592; Bumalik</button>
+                <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()">Susunod &#8594;</button>
+                <button class="btn btn-success hidden" id="submit-btn" onclick="submitQuiz()">Ipasa &#10004;</button>
+            </div>
+        </div>
+
+        <!-- ====== REVIEW ====== -->
+        <div id="review-section" class="hidden review-section">
+            <div class="review-header"><h2>Pagsusuri ng mga Sagot</h2><p>Tingnan ang iyong mga tama at maling sagot.</p></div>
+            <div id="review-container"></div>
+            <div class="review-bottom-buttons">
+                <button class="btn btn-primary" onclick="restartQuiz()">&#8634; Subukan Muli</button>
+                <button class="btn btn-secondary" onclick="backToScore()">&#8592; Bumalik sa Score</button>
+                <button class="btn btn-back-lesson" onclick="backToLesson()">&#128218; Bumalik sa Aralin</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Score Modal -->
+    <div class="modal-overlay" id="score-modal">
+        <div class="score-modal">
+            <div class="score-emoji" id="score-emoji"></div>
+            <h2 class="score-title" id="score-title"></h2>
+            <div class="circular-progress">
+                <svg><circle class="bg-circle" cx="80" cy="80" r="65"></circle><circle class="progress-circle" id="progress-circle" cx="80" cy="80" r="65"></circle></svg>
+                <div class="score-value" id="score-percent-display">0%</div>
+                <div class="score-label">Percentage</div>
+            </div>
+            <div class="score-stats">
+                <div class="modal-stat-box"><div class="stat-value" id="total-score-display">0/30</div><div class="stat-label">Total Score</div></div>
+                <div class="modal-stat-box"><div class="stat-value" id="percentage-display">0%</div><div class="stat-label">Percentage</div></div>
+                <div class="modal-stat-box correct-stat"><div class="stat-value" id="correct-display">0</div><div class="stat-label">Tama</div></div>
+                <div class="modal-stat-box wrong-stat"><div class="stat-value" id="wrong-display">0</div><div class="stat-label">Mali</div></div>
+            </div>
+            <p class="score-message" id="score-message"></p>
+            <div class="modal-buttons">
+                <button class="btn btn-primary" onclick="showReview()">Suriin ang mga Sagot</button>
+                <button class="btn btn-secondary" onclick="restartQuiz()">&#8634; Subukan Muli</button>
+                <button class="btn btn-back-lesson" onclick="backToLesson()">&#128218; Bumalik sa Aralin</button>
+            </div>
+        </div>
+    </div>
+
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- ==================== JAVASCRIPT ==================== -->
+    <script>
+    /*
+     * =========================================================
+     *  QUESTION DATA — edit questions here
+     * =========================================================
+     */
+    const questions = [
+        {question:"Ano ang kahulugan ng salitang 'kontemporaryo'?",choices:["Mga pangyayari sa kasalukuyan na maaaring nakaaapekto sa buhay ng mga tao sa lipunan","Mga pangyayari noong sinaunang panahon na walang epekto sa kasalukuyan","Mga isyu na tungkol lamang sa ekonomiya","Mga problema na nangyayari lang sa ibang bansa"],answer:"Mga pangyayari sa kasalukuyan na maaaring nakaaapekto sa buhay ng mga tao sa lipunan",explanation:"Ang 'kontemporaryo' ay tumutukoy sa mga pangyayari sa kasalukuyan na maaaring nakaaapekto sa buhay ng mga tao sa lipunan."},
+        {question:"Ang salitang 'isyu' ay tumutukoy sa alin sa mga sumusunod?",choices:["Mga pangyayari, suliranin, o paksa na napag-uusapan at maaaring dahilan ng debate","Mga solusyon sa mga problema ng lipunan","Mga batas na ipinatutupad ng pamahalaan","Mga balitang peke o fake news"],answer:"Mga pangyayari, suliranin, o paksa na napag-uusapan at maaaring dahilan ng debate",explanation:"Ang 'isyu' ay mga pangyayari, suliranin, o paksa na napag-uusapan at maaaring dahilan o batayan ng debate."},
+        {question:"Alin sa mga sumusunod ang halimbawa ng Kontemporaryong Isyung Panlipunan?",choices:["Same sex marriage at terorismo","COVID-19 at malnutrisyon","Global warming at El Niño","Online shopping at free trade"],answer:"Same sex marriage at terorismo",explanation:"Ang Kontemporaryong Isyung Panlipunan ay may malaking epekto sa iba't ibang sektor ng lipunan. Halimbawa: same sex marriage, terorismo, rasismo, halalan, kahirapan."},
+        {question:"Sa aling uri ng kontemporaryong isyu nabibilang ang COVID-19?",choices:["Kontemporaryong Isyung Pangkalusugan","Kontemporaryong Isyung Panlipunan","Kontemporaryong Isyung Pangkapaligiran","Kontemporaryong Pangkalakalan"],answer:"Kontemporaryong Isyung Pangkalusugan",explanation:"Ang COVID-19 ay Kontemporaryong Isyung Pangkalusugan dahil may kaugnayan sa kalusugan ng mga tao."},
+        {question:"Alin sa mga sumusunod ang halimbawa ng Kontemporaryong Isyung Pangkapaligiran?",choices:["Global warming at El Niño","Import/export at online shopping","Drug addiction at HIV/AIDS","Kahirapan at halalan"],answer:"Global warming at El Niño",explanation:"Halimbawa ng Isyung Pangkapaligiran: global warming, paglindol, baha, bagyo, El Niño, La Niña."},
+        {question:"Ano ang kabilang sa Kontemporaryong Pangkalakalan?",choices:["Import/export, online shopping, at free trade","Paglindol, baha, at bagyo","Rasismo, halalan, at terorismo","Malnutrisyon, drug addiction, at HIV/AIDS"],answer:"Import/export, online shopping, at free trade",explanation:"Ang Kontemporaryong Pangkalakalan ay may kinalaman sa globalisasyon at negosyo."},
+        {question:"Alin sa mga sumusunod ang halimbawa ng Print Media?",choices:["Komiks, magazine, at diyaryo","Balita, pelikula, at dokyumentaryo","Facebook, online blogs, at website","Radyo, telebisyon, at internet"],answer:"Komiks, magazine, at diyaryo",explanation:"Ang Print Media ay mga nakalimbag na materyales tulad ng komiks, magazine, at diyaryo."},
+        {question:"Sa pag-aaral ng kontemporaryong isyu, alin ang HINDI kabilang sa mga dapat taglayin?",choices:["Kakayahang magpakalat ng maling impormasyon","Kaalaman sa pagsusuri kung ito ay naglalahad ng patas na opinyon","Kakayahang malaman kung ang pahayag ay makatotohanan o haka-haka lamang","Kakayahan sa pagbibigay ng opinyon at pangkalahatang pananaw"],answer:"Kakayahang magpakalat ng maling impormasyon",explanation:"HINDI kasama ang pagpapakalat ng maling impormasyon sa mga dapat taglayin sa pagsusuri ng isyu."},
+        {question:"Bakit mahalaga na malaman ang lawak ng epekto at lebel ng isang isyu?",choices:["Upang malaman kung ito ay isyung lokal, pambansa, o pandaigdigan","Upang matukoy kung sino ang may kasalanan","Upang maiwasan ang pakikialam sa mga isyu","Upang malaman kung sino ang pinakamayaman sa lipunan"],answer:"Upang malaman kung ito ay isyung lokal, pambansa, o pandaigdigan",explanation:"Kinakailangang alamin ang lawak ng epekto — lokal, pambansa, o pandaigdigan."},
+        {question:"Alin ang halimbawa ng Visual Media?",choices:["Balita, pelikula, at dokyumentaryo","Komiks, magazine, at diyaryo","Facebook, online blogs, at website","Flyers, pahayagan, at magasin"],answer:"Balita, pelikula, at dokyumentaryo",explanation:"Ang Visual Media ay kinabibilangan ng balita, pelikula, at dokyumentaryo."},
+        {question:"Ano ang isa sa kahalagahan ng pag-aaral ng kontemporaryong isyu para sa isang mag-aaral?",choices:["Maging mulat sa mga nangyayari sa kapaligiran","Maging sikat sa social media","Maiwasan ang pagpasok sa paaralan","Maging eksperto sa teknolohiya"],answer:"Maging mulat sa mga nangyayari sa kapaligiran",explanation:"Ang kaalaman sa kontemporaryong isyu ay nagpapagiging mulat sa mga nangyayari sa kapaligiran."},
+        {question:"Alin sa mga sumusunod ang nalilinang sa pag-aaral ng kontemporaryong isyu?",choices:["Kasanayan sa pagbasa, pag-unawa, at pangwikang kasanayan","Kasanayan sa paglalaro ng video games","Kasanayan sa pagluluto ng pagkain","Kasanayan sa pag-awit at pagsayaw"],answer:"Kasanayan sa pagbasa, pag-unawa, at pangwikang kasanayan",explanation:"Lilinang ang kasanayan sa pagbasa at pag-unawa. Nahahasa rin ang kasanayang pangwika at panggramatika."},
+        {question:"Ano ang napauunlad ng pag-aaral ng kontemporaryong isyu ayon sa modyul?",choices:["Kakayahang mag-isip sa mga hakbangin, magplano, at magsagawa ng mga programang makalulutas sa mga suliranin","Kakayahang kumita ng malaking pera","Kakayahang manalo sa mga paligsahan","Kakayahang bumili ng mga mamahaling gamit"],answer:"Kakayahang mag-isip sa mga hakbangin, magplano, at magsagawa ng mga programang makalulutas sa mga suliranin",explanation:"Napauunlad ang kakayahang mag-isip sa mga hakbangin, magplano, at magsagawa ng programang makalulutas sa suliranin."},
+        {question:"Ano ang Republic Act 9003?",choices:["Ecological Solid Waste Management Act of 2000","Philippine Clean Air Act of 1999","Climate Change Act of 2009","Philippine Mining Act of 1995"],answer:"Ecological Solid Waste Management Act of 2000",explanation:"Ang RA 9003 ay ang Ecological Solid Waste Management Act of 2000, naging batas noong Enero 26, 2001."},
+        {question:"Ayon sa National Solid Waste Management Status Report, saan nagmumula ang pinakamalaking bahagdan ng municipal solid wastes?",choices:["Mga kabahayan (56.7%)","Mga komersyal na establisimyento","Mga industriyal na pabrika","Mga institusyunal na gusali"],answer:"Mga kabahayan (56.7%)",explanation:"Pinakamalaking bahagdan ng MSW ay mula sa mga kabahayan na may 56.7%."},
+        {question:"Ano ang pinakamalaking uri ng tinatapong basura ayon sa ulat?",choices:["Biodegradable na may 52.31%","Recyclable na may 27.78%","Residual waste na may 19.91%","Special waste na may 10%"],answer:"Biodegradable na may 52.31%",explanation:"Ang pinakamalaking uri ng basura ay biodegradable na may 52.31%."},
+        {question:"Ano ang Materials Recovery Facility (MRF)?",choices:["Pinaglalagyan ng mga nabubulok na basura upang gawing compost at pansamantalang inilalagak ang mga recyclables","Isang pabrika na gumagawa ng mga plastik na produkto","Ospital na nagpapagamot sa mga taong nagkasakit dahil sa basura","Paaralan na nagtuturo ng waste management"],answer:"Pinaglalagyan ng mga nabubulok na basura upang gawing compost at pansamantalang inilalagak ang mga recyclables",explanation:"Ang MRF ay pinaglalagyan ng nabubulok na basura para gawing compost at inilalagak ang mga recyclables."},
+        {question:"Alin sa mga sumusunod ang IPINAGBABAWAL sa Seksyon 48 ng RA 9003?",choices:["Pagtatapon o pagtatambak ng anumang uri ng basura sa mga pampublikong lugar","Pagbubukod ng basura sa bahay","Paggamit ng compost sa hardin","Pagbebenta ng recyclable materials"],answer:"Pagtatapon o pagtatambak ng anumang uri ng basura sa mga pampublikong lugar",explanation:"Ipinagbabawal ang pagtatapon sa mga pampublikong lugar tulad ng daan, bangketa, bakanteng lote, kanal, estero, at parke."},
+        {question:"Ano ang Mother Earth Foundation?",choices:["Non-profit organization na nagsusulong ng zero waste sa pamamagitan ng pagbabawas at wastong pamamahala ng basura","Isang ahensya ng pamahalaan na namamahala sa kagubatan","Samahan ng mga mangingisda sa Pilipinas","Isang kompanya na gumagawa ng recycled products"],answer:"Non-profit organization na nagsusulong ng zero waste sa pamamagitan ng pagbabawas at wastong pamamahala ng basura",explanation:"Ang Mother Earth Foundation ay non-profit organization na nagsusulong ng zero waste."},
+        {question:"Aling ahensya ang nangunguna sa National Solid Waste Management Commission?",choices:["Department of Environment and Natural Resources (DENR)","Department of Health (DOH)","Department of Interior and Local Government (DILG)","Metro Manila Development Authority (MMDA)"],answer:"Department of Environment and Natural Resources (DENR)",explanation:"Ang NSWMC ay sa pangunguna ng DENR at may 14 na ahensya ng pamahalaan at 3 mula sa pribadong sektor."},
+        {question:"Ayon sa Senado ng Pilipinas, ilang porsyento ng kalupaan ng bansa ang saklaw ng kagubatan noong 1934?",choices:["57%","23%","45%","30%"],answer:"57%",explanation:"Noong 1934, ang kagubatan ay sumasaklaw ng 57% ng kalupaan. Noong 2010, bumaba ito sa 23%."},
+        {question:"Ano ang deporestasyon ayon sa Food and Agriculture Organization (FAO)?",choices:["Pangmatagalan at permanenteng pagkasira ng kagubatan dulot ng iba't ibang gawain ng tao","Proseso ng pagtatanim ng mga puno sa kagubatan","Pagbabago ng klima sa buong mundo","Pagkuha ng mga mineral mula sa lupa"],answer:"Pangmatagalan at permanenteng pagkasira ng kagubatan dulot ng iba't ibang gawain ng tao",explanation:"Ayon sa FAO, ang deporestasyon ay pangmatagalan at permanenteng pagkasira ng kagubatan dulot ng gawain ng tao."},
+        {question:"Ano ang layunin ng Presidential Decree 705?",choices:["Ipinag-utos ang pagsasagawa ng reforestation sa buong bansa at ipinagbawal ang sistema ng pagkakaingin","Itinatag ang National Caves and Cave Resources Management","Idineklara ang ilang pook bilang national park","Ipinagbawal ang paggamit ng chainsaw"],answer:"Ipinag-utos ang pagsasagawa ng reforestation sa buong bansa at ipinagbawal ang sistema ng pagkakaingin",explanation:"Ang PD 705 ay nagutos ng reforestation sa buong bansa at ipinagbawal ang pagkakaingin."},
+        {question:"Ano ang layunin ng Republic Act 9175 o 'The Chainsaw Act'?",choices:["Ipinagbawal ang paggamit ng chainsaw upang matigil ang ilegal na pagtotroso","Ipinag-utos ang pagtatanim ng puno sa buong bansa","Binigyang proteksyon ang mga wildlife resources","Itinataguyod ang Philippine Clean Air Act"],answer:"Ipinagbawal ang paggamit ng chainsaw upang matigil ang ilegal na pagtotroso",explanation:"Ang RA 9175 ay ipinagbawal ang paggamit ng chainsaw upang matigil ang ilegal na pagtotroso."},
+        {question:"Ano ang Philippine Mining Act?",choices:["Batas na naisabatas noong 1995 upang masubaybayan ang operasyon ng pagmimina kasabay ng pangangalaga sa kalikasan","Batas na nagbawal sa lahat ng uri ng pagmimina sa Pilipinas","Batas na nagpapahintulot sa sinumang gustong magmina kahit walang permit","Batas na nagtatatag ng mga bagong minahan sa buong bansa"],answer:"Batas na naisabatas noong 1995 upang masubaybayan ang operasyon ng pagmimina kasabay ng pangangalaga sa kalikasan",explanation:"Ang Philippine Mining Act ay naisabatas noong 1995 upang masubaybayan ang pagmimina kasabay ng pangangalaga sa kalikasan."},
+        {question:"Ano ang pagku-quarry o quarrying?",choices:["Paraan ng pagkuha ng mga bato, buhangin, graba at iba pang mineral mula sa lupa","Paraan ng pagtatanim ng mga puno sa kagubatan","Paraan ng paglilinis ng mga ilog at dagat","Paraan ng pagtatayo ng mga gusali at tulay"],answer:"Paraan ng pagkuha ng mga bato, buhangin, graba at iba pang mineral mula sa lupa",explanation:"Ang quarrying ay ang pagkuha ng bato, buhangin, graba mula sa lupa sa pamamagitan ng pagtitibag, paghuhukay, o pagbabarena."},
+        {question:"Ano ang climate change?",choices:["Pagbabago ng klima sa buong mundo na naramdaman simula noong kalagitnaan ng ika-20 na siglo","Pagbabago ng panahon mula tag-init patungo sa tag-ulan","Pagbabago ng temperatura sa loob ng isang araw","Pagbabago ng kulay ng kalangitan tuwing umaga at gabi"],answer:"Pagbabago ng klima sa buong mundo na naramdaman simula noong kalagitnaan ng ika-20 na siglo",explanation:"Ang climate change ay abnormal na pagbabago ng klima sa buong mundo, naramdaman simula kalagitnaan ng ika-20 na siglo."},
+        {question:"Alin sa mga sumusunod ang sanhi ng climate change na gawa ng tao?",choices:["Paggamit ng fossil fuels at pagputol ng mga puno","Pag-ikot ng mundo sa araw","Init na nagmumula sa ilalim ng lupa","Enerhiya mula sa araw"],answer:"Paggamit ng fossil fuels at pagputol ng mga puno",explanation:"Ang gawain ng tao tulad ng paggamit ng fossil fuels at pagputol ng puno ay nagpapataas ng carbon dioxide at greenhouse gases."},
+        {question:"Ano ang Republic Act No. 9729?",choices:["Climate Change Act of 2009","Ecological Solid Waste Management Act of 2000","Philippine Clean Air Act of 1999","National Integrated Protected Areas System Act of 1992"],answer:"Climate Change Act of 2009",explanation:"Ang RA 9729 ay Climate Change Act of 2009, sagot ng Pilipinas sa banta ng climate change."},
+        {question:"Ano ang coral bleaching?",choices:["Proseso na pumapatay sa mga coral reef na tahanan ng mga isda at iba pang lamang dagat","Paraan ng pagpaparami ng mga coral sa karagatan","Proseso ng paglilinis ng mga coral reef","Paraan ng pagkuha ng mga coral para sa mga alahas"],answer:"Proseso na pumapatay sa mga coral reef na tahanan ng mga isda at iba pang lamang dagat",explanation:"Ang coral bleaching ay pumapatay sa mga coral reef. Nagdudulot ng pagbaba ng nahuhuling isda at pagkawala ng mga species."}
+    ];
+
+    const scoreMessages = [
+        {min:25,max:30,emoji:"🎉",message:"Mahusay! Papasa ka na bes!"},
+        {min:20,max:24,emoji:"🔥",message:"Konti pa paps basic na sayo ma perfect yan!"},
+        {min:15,max:19,emoji:"😎",message:"Sheesh, review pa ulit ng konti! Makukuha mo rin yan ;)"},
+        {min:10,max:14,emoji:"📚",message:"Review pa ng konti bes."},
+        {min:0,max:9,emoji:"😂😂😂",message:"Lagot ka sa AP teacher mo pag bumagsak ka 😂😂😂"}
+    ];
+
+    let currentQuestion=0,userAnswers=[],shuffledQuestions=[],shuffledChoicesMap=[];
+    let timerEnabled=false,timerInterval=null,timerSeconds=0;
+    const AudioCtx=window.AudioContext||window.webkitAudioContext;
+    let audioCtx=null;
+    function getAudioContext(){if(!audioCtx)audioCtx=new AudioCtx();return audioCtx;}
+
+    function playCorrectSound(){try{const c=getAudioContext(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.type='sine';o.frequency.setValueAtTime(523.25,c.currentTime);o.frequency.setValueAtTime(659.25,c.currentTime+.1);o.frequency.setValueAtTime(783.99,c.currentTime+.2);g.gain.setValueAtTime(.3,c.currentTime);g.gain.exponentialRampToValueAtTime(.01,c.currentTime+.4);o.start(c.currentTime);o.stop(c.currentTime+.4);}catch(e){}}
+    function playIncorrectSound(){try{const c=getAudioContext(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.type='sawtooth';o.frequency.setValueAtTime(200,c.currentTime);o.frequency.setValueAtTime(150,c.currentTime+.15);g.gain.setValueAtTime(.2,c.currentTime);g.gain.exponentialRampToValueAtTime(.01,c.currentTime+.3);o.start(c.currentTime);o.stop(c.currentTime+.3);}catch(e){}}
+
+    function shuffle(a){const r=[...a];for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]];}return r;}
+
+    document.getElementById('dark-toggle').addEventListener('click',()=>{const t=document.documentElement.getAttribute('data-theme');document.documentElement.setAttribute('data-theme',t==='dark'?'light':'dark');});
+    document.getElementById('timer-toggle').addEventListener('change',e=>{document.getElementById('timer-duration-container').classList.toggle('visible',e.target.checked);});
+
+    function switchTab(i){document.querySelectorAll('.lesson-tab').forEach((t,n)=>t.classList.toggle('active',n===i));document.querySelectorAll('.lesson-panel').forEach((p,n)=>p.classList.toggle('active',n===i));window.scrollTo({top:document.getElementById('lesson-tabs').offsetTop-80,behavior:'smooth'});}
+    function showQuizSetup(){document.getElementById('lesson-section').classList.add('hidden');document.getElementById('start-screen').classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'});}
+    function backToLesson(){clearInterval(timerInterval);document.getElementById('score-modal').classList.remove('active');document.getElementById('quiz-section').classList.add('hidden');document.getElementById('review-section').classList.add('hidden');document.getElementById('start-screen').classList.add('hidden');document.getElementById('lesson-section').classList.remove('hidden');document.getElementById('timer-display').classList.remove('active','warning');document.getElementById('progress-circle').style.strokeDashoffset=408;window.scrollTo({top:0,behavior:'smooth'});}
+
+    function startQuiz(){
+        shuffledQuestions=shuffle(questions.map((q,i)=>({...q,originalIndex:i})));
+        shuffledChoicesMap=shuffledQuestions.map(q=>shuffle(q.choices));
+        currentQuestion=0;userAnswers=new Array(shuffledQuestions.length).fill(null);
+        timerEnabled=document.getElementById('timer-toggle').checked;
+        if(timerEnabled){timerSeconds=parseInt(document.getElementById('timer-minutes').value)*60;document.getElementById('timer-display').classList.add('active');updateTimerDisplay();startTimer();}
+        else{document.getElementById('timer-display').classList.remove('active');}
+        document.getElementById('start-screen').classList.add('hidden');document.getElementById('lesson-section').classList.add('hidden');
+        document.getElementById('quiz-section').classList.remove('hidden');document.getElementById('review-section').classList.add('hidden');renderQuestion();
+    }
+
+    function startTimer(){clearInterval(timerInterval);timerInterval=setInterval(()=>{timerSeconds--;updateTimerDisplay();if(timerSeconds<=0){clearInterval(timerInterval);submitQuiz();}},1000);}
+    function updateTimerDisplay(){const m=Math.floor(timerSeconds/60),s=timerSeconds%60;const d=document.getElementById('timer-display');d.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;d.classList.toggle('warning',timerSeconds<=60);}
+
+    function renderQuestion(){
+        const q=shuffledQuestions[currentQuestion],ch=shuffledChoicesMap[currentQuestion],total=shuffledQuestions.length,letters=['A','B','C','D'];
+        const answered=userAnswers.filter(a=>a!==null).length;
+        document.getElementById('question-counter').textContent=`Tanong ${currentQuestion+1} ng ${total}`;
+        document.getElementById('answered-counter').textContent=`${answered} / ${total} nasagutan`;
+        document.getElementById('progress-bar').style.width=`${(answered/total)*100}%`;
+        document.getElementById('question-number-badge').textContent=`Tanong ${currentQuestion+1}`;
+        document.getElementById('question-text').textContent=q.question;
+        const container=document.getElementById('choices-container');container.innerHTML='';
+        ch.forEach((c,i)=>{const btn=document.createElement('button');btn.className='choice-btn'+(userAnswers[currentQuestion]===c?' selected':'');btn.innerHTML=`<span class="choice-letter">${letters[i]}</span><span>${c}</span>`;btn.addEventListener('click',()=>selectAnswer(c));container.appendChild(btn);});
+        document.getElementById('prev-btn').disabled=currentQuestion===0;
+        const isLast=currentQuestion===total-1,allAnswered=userAnswers.every(a=>a!==null);
+        document.getElementById('next-btn').classList.toggle('hidden',isLast);
+        document.getElementById('submit-btn').classList.toggle('hidden',!isLast||!allAnswered);
+        const card=document.getElementById('question-card');card.style.animation='none';card.offsetHeight;card.style.animation='fadeInUp 0.35s ease';
+    }
+
+    function selectAnswer(c){const prev=userAnswers[currentQuestion];userAnswers[currentQuestion]=c;if(prev!==c){(c===shuffledQuestions[currentQuestion].answer)?playCorrectSound():playIncorrectSound();}renderQuestion();}
+    function nextQuestion(){if(userAnswers[currentQuestion]===null){shakeCard();return;}if(currentQuestion<shuffledQuestions.length-1){currentQuestion++;renderQuestion();}}
+    function prevQuestion(){if(currentQuestion>0){currentQuestion--;renderQuestion();}}
+    function shakeCard(){const c=document.getElementById('question-card');c.style.animation='none';c.offsetHeight;c.style.animation='';c.style.transition='transform 0.1s';c.style.transform='translateX(-8px)';setTimeout(()=>c.style.transform='translateX(8px)',100);setTimeout(()=>c.style.transform='translateX(-4px)',200);setTimeout(()=>c.style.transform='translateX(4px)',300);setTimeout(()=>{c.style.transform='';c.style.transition='';},400);}
+
+    function submitQuiz(){
+        clearInterval(timerInterval);let correct=0;
+        shuffledQuestions.forEach((q,i)=>{if(userAnswers[i]===q.answer)correct++;});
+        const total=shuffledQuestions.length,wrong=total-correct,pct=Math.round((correct/total)*100);
+        const msg=scoreMessages.find(m=>correct>=m.min&&correct<=m.max);
+        document.getElementById('score-emoji').textContent=msg.emoji;
+        document.getElementById('score-title').textContent=`${correct} / ${total}`;
+        document.getElementById('score-message').textContent=msg.message;
+        document.getElementById('total-score-display').textContent=`${correct}/${total}`;
+        document.getElementById('percentage-display').textContent=`${pct}%`;
+        document.getElementById('correct-display').textContent=correct;
+        document.getElementById('wrong-display').textContent=wrong;
+        document.getElementById('quiz-section').classList.add('hidden');
+        document.getElementById('score-modal').classList.add('active');
+        setTimeout(()=>{const c=document.getElementById('progress-circle');const circ=2*Math.PI*65;c.style.strokeDasharray=circ;c.style.strokeDashoffset=circ-(pct/100)*circ;},100);
+        animateCounter('score-percent-display',0,pct,'%',1500);
+        if(correct>=25)launchConfetti();
+    }
+
+    function animateCounter(id,start,end,suffix,dur){const el=document.getElementById(id);const t0=performance.now();function tick(now){const p=Math.min((now-t0)/dur,1);el.textContent=Math.round(start+(end-start)*(1-Math.pow(1-p,3)))+suffix;if(p<1)requestAnimationFrame(tick);}requestAnimationFrame(tick);}
+
+    function launchConfetti(){const canvas=document.getElementById('confetti-canvas'),ctx=canvas.getContext('2d');canvas.width=window.innerWidth;canvas.height=window.innerHeight;const colors=['#6c63ff','#ff6584','#ffd166','#06d6a0','#118ab2','#ef476f','#a78bfa','#f59e0b','#10b981'];const particles=Array.from({length:150},()=>({x:Math.random()*canvas.width,y:Math.random()*canvas.height-canvas.height,w:Math.random()*10+5,h:Math.random()*6+3,color:colors[Math.floor(Math.random()*colors.length)],vx:(Math.random()-.5)*4,vy:Math.random()*3+2,rot:Math.random()*360,rs:(Math.random()-.5)*10,op:1}));let frame=0;(function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);frame++;particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.rot+=p.rs;p.vy+=.05;if(frame>150)p.op=Math.max(0,p.op-.02);ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);ctx.globalAlpha=p.op;ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();});if(frame<200)requestAnimationFrame(draw);else ctx.clearRect(0,0,canvas.width,canvas.height);})();}
+
+    function showReview(){
+        document.getElementById('score-modal').classList.remove('active');document.getElementById('quiz-section').classList.add('hidden');
+        document.getElementById('start-screen').classList.add('hidden');document.getElementById('lesson-section').classList.add('hidden');
+        document.getElementById('review-section').classList.remove('hidden');
+        const container=document.getElementById('review-container');container.innerHTML='';
+        shuffledQuestions.forEach((q,i)=>{const ua=userAnswers[i],ok=ua===q.answer;const card=document.createElement('div');card.className=`review-card ${ok?'correct':'incorrect'}`;card.innerHTML=`<div class="review-question-number">Tanong ${i+1}</div><div class="review-question-text">${q.question}</div>${ok?`<div class="review-answer correct-answer"><span class="review-icon">✅</span><span>Iyong sagot: ${ua}</span></div>`:`<div class="review-answer wrong-answer"><span class="review-icon">❌</span><span>Iyong sagot: ${ua||'Walang sagot'}</span></div><div class="review-answer correct-answer"><span class="review-icon">✅</span><span>Tamang sagot: ${q.answer}</span></div>`}<div class="review-explanation"><strong>Paliwanag:</strong> ${q.explanation}</div>`;container.appendChild(card);});
+        window.scrollTo({top:0,behavior:'smooth'});
+    }
+    function backToScore(){document.getElementById('review-section').classList.add('hidden');document.getElementById('score-modal').classList.add('active');}
+    function restartQuiz(){clearInterval(timerInterval);document.getElementById('score-modal').classList.remove('active');document.getElementById('quiz-section').classList.add('hidden');document.getElementById('review-section').classList.add('hidden');document.getElementById('start-screen').classList.remove('hidden');document.getElementById('lesson-section').classList.add('hidden');document.getElementById('timer-display').classList.remove('active','warning');document.getElementById('progress-circle').style.strokeDashoffset=408;window.scrollTo({top:0,behavior:'smooth'});}
+
+    document.addEventListener('keydown',e=>{if(document.getElementById('quiz-section').classList.contains('hidden'))return;if(e.key==='ArrowRight'||e.key==='Enter')nextQuestion();if(e.key==='ArrowLeft')prevQuestion();});
+    window.addEventListener('resize',()=>{const c=document.getElementById('confetti-canvas');c.width=window.innerWidth;c.height=window.innerHeight;});
+    </script>
+</body>
+</html>
